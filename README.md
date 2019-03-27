@@ -9,6 +9,7 @@ Also, Code Bullet seemed to want to vary the First and second Pipe Pairs which l
 I left some of the pair overrides in place because by then I wanted to add more behavior to the birds, which is to add a left/right ability to perhaps improve their swoops and overcome the double pair problem.
 
 The entire frame was expanded and the birds were given more freedom to roam horizontally.
+A headwind factor was included, just like gravity, to drive the birds to the back wall. Death types were added for the left and right walls.
 
 New Vision was added for the brain:
 - xPos
