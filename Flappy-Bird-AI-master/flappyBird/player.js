@@ -17,6 +17,23 @@ class Player {
     this.pipeRandomNo++;
     this.ground = new Ground();
 
+    this.isBest = false;
+
+    // genome PROJECT SPECIFIC HACK
+    // Vision values
+    this.vision0 = 0; // y velocity
+    this.vision1 = 0; // x position
+    this.vision2 = 0; // distance to Closest Pipe
+    this.vision3 = 0; // height above Closest
+    this.vision4 = 0; // height below Closest
+    this.vision5 = 0; // distance to Furthest Pipe
+    this.vision6 = 0; // height above Furthest
+    this.vision7 = 0; // height below Furthest
+    // Response values
+    this.response0 = 0; // flap
+    this.response1 = 0; // "right"
+    this.response2 = 0; // "left"
+
 
     //-----------------------------------------------------------------------
     //neat stuff
@@ -32,7 +49,7 @@ class Player {
 
     //this.genomeInputs = 4;
     //this.genomeOutputs = 1;
-    this.genomeInputs = 5;
+    this.genomeInputs = 8;
     this.genomeOutputs = 3;
 
     this.brain = new Genome(this.genomeInputs, this.genomeOutputs);
@@ -41,6 +58,7 @@ class Player {
 
   show() {
 
+    // each player carrying pipes - can this be pulled out?
     this.pipes1.show();
     this.pipes2.show();
     push();
@@ -56,7 +74,18 @@ class Player {
     } else {
       rotate(PI / 2);
     }
-    image(birdSprite, -birdSprite.width / 2, -birdSprite.height / 2);
+
+   
+    // set bird
+    if(this.isBest){
+      tint(10, 220, 105, 255);
+      //tint(random(255), random(255), random(255), 255);
+      image(birdSprite, -birdSprite.width / 2, -birdSprite.height / 2);
+    }
+    else{
+      image(birdSprite, -birdSprite.width / 2, -birdSprite.height / 2);
+    }
+    
     pop();
 
     this.ground.show();
@@ -163,21 +192,13 @@ class Player {
 
   right(){
     if (!this.dead && !this.isOnGround) {
-
-/*       if(this.x > 6){
-        this.x -= 6;
-      } */
-      
         this.velX = 6;
-      
     }
   }
 
   left(){
     if (!this.dead && !this.isOnGround) {
-
-        this.velX = 6;
-    
+        this.velX = -6;
     }
   }
 
@@ -186,18 +207,40 @@ class Player {
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace
     this.vision = [];
     this.vision[0] = map(this.velY, -25, 25, -1, 1); //bird can tell its current y velocity
-    // x velocity/POSITION what do these brain vision params map to? directions?
-    //this.vision[1] = map(this.x, 0, canvas.width - this.x, 1, 0);
-    this.vision[1] = map(this.x, 0, canvas.width - this.x, 1, 0);
+    
+    this.vision[1] = map(this.x, 0, canvas.width - this.x, 1, 0); // x POSITION 
 
     var closestPipe = this.pipes1;
+    var furthestPipe = this.pipes2;
+
     if (!this.pipes2.passed && (this.pipes1.passed || this.pipes1.bottomPipe.x - this.pipes2.bottomPipe.x > 0)) {
       closestPipe = this.pipes2;
+      furthestPipe = this.pipes1;
     }
     var distanceToClosestPipe = closestPipe.bottomPipe.x - this.x;
     this.vision[2] = map(distanceToClosestPipe, 0, canvas.width - this.x, 1, 0);
-    this.vision[3] = map(max(0, closestPipe.bottomPipe.topY - this.y), 0, 700, 0, 1); //height above bottomY
-    this.vision[4] = map(max(0, this.y - closestPipe.topPipe.bottomY), 0, 700, 0, 1); //distance below topThing
+
+    var closestOver = max(0, closestPipe.bottomPipe.topY - this.y);
+    this.vision[3] = map(closestOver, 0, 700, 0, 1); //height above bottomY
+    var closestBelow  = max(0, this.y - closestPipe.topPipe.bottomY);
+    this.vision[4] = map(closestBelow, 0, 700, 0, 1); //distance below topThing
+
+    var distanceToFurthestPipe = furthestPipe.bottomPipe.x - this.x;
+    this.vision[5] = map(distanceToFurthestPipe, 0, canvas.width - this.x, 1, 0);
+    var furthestOver = max(0, furthestPipe.bottomPipe.topY - this.y);
+    this.vision[6] = map(furthestOver, 0, 700, 0, 1); //height above bottomY
+    var furthestBelow = max(0, this.y - furthestPipe.topPipe.bottomY);
+    this.vision[7] = map(furthestBelow, 0, 700, 0, 1); //distance below topThing
+
+    // set player object vision properties
+    this.vision0 = this.velY;
+    this.vision1 = this.x;
+    this.vision2 = distanceToClosestPipe;
+    this.vision3 = closestOver;
+    this.vision4 = closestBelow;
+    this.vision5 = distanceToFurthestPipe;
+    this.vision6 = furthestOver;
+    this.vision7 = furthestBelow;
 
   }
 
@@ -223,13 +266,9 @@ class Player {
         this.left();
       }
 
-
-      // for (var i = 0; i < this.decision.length; i++) {
-      //   if (this.decision[i] > max) {
-      //     max = this.decision[i];
-      //     maxIndex = i;
-      //   }
-      // }
+      this.response0 = this.decision[0];
+      this.response1 = this.decision[1];
+      this.response2 = this.decision[2];
 
 
 

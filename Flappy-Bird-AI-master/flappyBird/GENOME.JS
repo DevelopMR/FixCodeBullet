@@ -307,6 +307,7 @@ class Genome {
 
     //1% of the time add a node
     var rand3 = random(1);
+    // if (rand3 < 0.01) {
     if (rand3 < 0.01) {
 
       this.addNode(innovationHistory);
@@ -421,6 +422,131 @@ class Genome {
 
       return clone;
     }
+
+//----------------------------------------------------------------------------------------------------------------------------------------
+    //draw the genome on the screen
+    drawGenomeDetail(startX, startY, w, h, player) {
+      
+      var allNodes = []; 
+      var nodePoses = []; 
+      var nodeNumbers = []; 
+  
+      //get the positions on the screen that each node is supposed to be in
+  
+  
+      //split the this.nodes varo layers
+      for (var i = 0; i < this.layers; i++) {
+        var temp = []; 
+        for (var j = 0; j < this.nodes.length; j++) { //for each node
+          if (this.nodes[j].layer == i) { //check if it is in this layer
+            temp.push(this.nodes[j]); //add it to this layer
+          }
+        }
+        allNodes.push(temp); //add this layer to all this.nodes
+      }
+  
+      //for each layer add the position of the node on the screen to the node posses arraylist
+      for (var i = 0; i < this.layers; i++) {
+        fill(255, 0, 0);
+        var x = startX + float((i + 1.0) * w) / float(this.layers + 1.0);
+        for (var j = 0; j < allNodes[i].length; j++) { //for the position in the layer
+          var y = startY + float((j + 1.0) * h) / float(allNodes[i].length + 1.0);
+          nodePoses.push(createVector(x, y));
+          nodeNumbers.push(allNodes[i][j].number);
+        }
+      }
+  
+      //draw connections
+      stroke(0);
+      strokeWeight(2);
+      for (var i = 0; i < this.genes.length; i++) {
+        if (this.genes[i].enabled) {
+          stroke(0);
+        } else {
+          stroke(100);
+        }
+        var from;
+        var to;
+        from = nodePoses[nodeNumbers.indexOf(this.genes[i].fromNode.number)];
+        to = nodePoses[nodeNumbers.indexOf(this.genes[i].toNode.number)];
+        if (this.genes[i].weight > 0) {
+          stroke(255, 0, 0);
+        } else {
+          stroke(0, 0, 255);
+        }
+        strokeWeight(map(abs(this.genes[i].weight), 0, 1, 0, 3));
+        line(from.x, from.y, to.x, to.y);
+      }
+  
+      //draw this.nodes last so they appear ontop of the connection lines
+      textSize(10);
+      textAlign(CENTER, CENTER);
+      stroke(0);
+      textFont('Arial');
+      for (var i = 0; i < nodePoses.length; i++) {
+        fill(255);
+        //stroke(0);
+        strokeWeight(1);
+        ellipse(nodePoses[i].x, nodePoses[i].y, 20, 20);
+        //textSize(10);
+        fill(0);
+        //textAlign(CENTER, CENTER);
+        //textFont('Arial');
+        text(nodeNumbers[i], nodePoses[i].x, nodePoses[i].y);
+  
+      }
+  
+// add player detail HACK
+
+      var tPosX = nodePoses[0].x - 15; 
+      var tPosY = startY;
+      textAlign(RIGHT);
+      noStroke();
+      textSize(12);
+      textStyle(BOLD);
+      text(player.vision0.toFixed(3) + " |yVelc", tPosX, 571);
+      text(player.vision1.toFixed(3) + " |xPos", tPosX, 591);
+      text(player.vision2.toFixed(3) + " |DistC", tPosX, 611);
+      text(player.vision3.toFixed(3) + " |AbvC", tPosX, 631);
+      text(player.vision4.toFixed(3) + " |BelwC", tPosX, 651);
+      text(player.vision5.toFixed(3) + " |DistF", tPosX, 671);
+      text(player.vision6.toFixed(3) + " |AbvF", tPosX, 691);
+      text(player.vision7.toFixed(3) + " |BelwF", tPosX, 711);
+
+      textFont('Arial');
+      textSize(14);
+      var res0 = player.response0.toFixed(3);
+      var res1 = player.response1.toFixed(3);
+      var res2 = player.response2.toFixed(3);
+
+      fill(0);
+
+      if (res0 > .6) {
+        fill(255,0,0);
+      }
+      text(player.response0.toFixed(3) + " |Flap", tPosX + w - 85, 581);
+      fill(0);
+
+      if (res1 > .6) {
+        fill(255,0,0);
+      }
+      text(player.response1.toFixed(3) + " |Right", tPosX + w - 80, 631);
+      fill(0);
+
+      if (res2 > .6) {
+        fill(255,0,0);
+      }
+      text(player.response2.toFixed(3) + " |Left", tPosX + w - 90, 684);
+      fill(0);
+ 
+      textStyle(NORMAL);
+    }
+
+
+
+
+
+
     //----------------------------------------------------------------------------------------------------------------------------------------
     //draw the genome on the screen
   drawGenome(startX, startY, w, h) {
@@ -485,6 +611,7 @@ class Genome {
       textSize(10);
       fill(0);
       textAlign(CENTER, CENTER);
+      textFont('Arial');
       text(nodeNumbers[i], nodePoses[i].x, nodePoses[i].y);
 
     }

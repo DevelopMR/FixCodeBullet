@@ -84,7 +84,8 @@ function draw() {
       population.naturalSelection();
     }
   }
-  // writeInfo();
+  writeInfo();
+  drawBrain();
 }
 //-----------------------------------------------------------------------------------
 function showBestPlayersForEachGeneration() {
@@ -134,14 +135,14 @@ function drawToScreen() {
     image(backgroundSprite, 0, 0, canvas.width, canvas.height);
     // showAll();
     // updateAll();
-    drawBrain();
+    // drawBrain();
 
 
   }
 }
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function drawBrain() { //show the brain of whatever genome is currently showing
-  var startX = canvas.width - 400; //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace DID IT
+  var startX = canvas.width - 310; //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace DID IT
   var startY = 550;
   var w = 300;
   var h = 200;
@@ -154,7 +155,9 @@ function drawBrain() { //show the brain of whatever genome is currently showing
   } else if (showBestEachGen) {
     genPlayerTemp.brain.drawGenome(startX, startY, w, h);
   } else {
-    population.players[0].brain.drawGenome(startX, startY, w, h);
+   
+    population.players[0].brain.drawGenomeDetail(startX, startY, w, h, population.getCurrentBest());
+ 
   }
 }
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -189,11 +192,12 @@ function writeInfo() {
   } else {
     var bestCurrentPlayer = population.getCurrentBest();
 
-    text(bestCurrentPlayer.score, canvas.width / 2, 50); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace
-    textSize(30);
+    // text(bestCurrentPlayer.score, canvas.width / 2, 50); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<replace
+    textSize(26);
     textAlign(LEFT);
-
-    text("Gen: " + population.gen, 20, 50);
+    //textFont('Berlin Sans FB Demi');
+    textFont('Arial Black');
+    text("GENERATION " + population.gen, 10, 755);
 
   }
 }

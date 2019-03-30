@@ -1,8 +1,8 @@
 class PipePair {
   constructor(firstPipe, previousPipe, upToRandNo) {
     var minDistFromEdge = 50;
-    //this.gap = 130 + random(60);
-    this.gap = 160;
+    this.gap = 140 + random(60);
+    //this.gap = 160;
     this.maxPipeDifference = 300;
     this.passed = false;
     if (firstPipe) {

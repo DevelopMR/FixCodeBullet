@@ -29,15 +29,21 @@ class Population {
   getCurrentBest() {
 
     for (var i = 0; i < this.players.length; i++) {
+      this.players[i].isBest = false; 
       if (!this.players[i].dead) {
+        this.players[i].isBest = true;
         return this.players[i];
       }
     }
+    
+    this.players[0].isBest = true;
     return this.players[0];
+
   }
   updateAlive() {
       var firstShown = false;
       for (var i = 0; i < this.players.length; i++) {
+      //for (var i = this.players.length; i > 0; i--) {  // try this backwards to put best bird on top
         if (!this.players[i].dead) {
           for (var j = 0; j < superSpeed; j++) {
             this.players[i].look(); //get inputs for brain
@@ -53,6 +59,11 @@ class Population {
           }
 
         }
+      }
+
+      // puts the Best on top
+      if (!this.players[0].dead) {
+        this.players[0].show();
       }
 
     }
